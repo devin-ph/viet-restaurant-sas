@@ -1,0 +1,22 @@
+# data
+data/raw/
+data/processed/
+
+# model
+models/checkpoints/
+models/*.pt
+models/*.bin
+
+# cache
+__pycache__/
+*.pyc
+
+# env
+.env
+.venv/
+
+# notebook checkpoint
+.ipynb_checkpoints/
+
+# system
+.DS_Store

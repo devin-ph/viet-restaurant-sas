@@ -1,5 +1,7 @@
 import os
 import pandas as pd
+import pickle
+from sklearn.model_selection import train_test_split
 
 def get_project_root():
     return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -18,9 +20,6 @@ def save_csv(df, path, index=False):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     df.to_csv(path, index=index)
     print(f"Saved to {path}")
-
-
-from sklearn.model_selection import train_test_split
 
 def split_train_val_test(df, text_col="review", test_size=0.2, val_size=0.1, random_state=42):
 
@@ -44,5 +43,26 @@ def get_aspect_columns(df, text_col="review"):
     return [col for col in df.columns if col != text_col]
 
 
-def encode_labels(df, aspect_cols):
+def get_label_matrix(df, aspect_cols):
     return df[aspect_cols].values
+
+def encode_sentiment(df, col="sentiment"):
+    mapping = {"positive": 0, "neutral": 1, "negative": 2}
+    df[col] = df[col].map(mapping)
+    return df, mapping
+
+def encode_aspect(df, col="aspect"):
+    aspects = sorted(df[col].unique().tolist())
+    mapping = {a: i for i, a in enumerate(aspects)}
+    df[col] = df[col].map(mapping)
+    return df, mapping
+
+def save_pickle(obj, path):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'wb') as f:
+        pickle.dump(obj, f)
+    print(f"Saved to {path}")
+
+def load_pickle(path):
+    with open(path, 'rb') as f:
+        return pickle.load(f)
